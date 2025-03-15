@@ -37,8 +37,18 @@ int main(int argc, char* argv[]) {
       case '-':
         memory[head]--;
       case '[':
-        stack_p++;
-        stack[stack_p] = instr_p + 1;
+        if (memory[head] == (char) 0) {
+          int open_brackets = 1;
+          while (open_brackets > 0) {
+            instr_p++;
+            if (program[instr_p] == '[') open_brackets++;
+            if (program[instr_p] == ']') open_brackets--;
+          }
+        } else {
+          stack_p++;
+          stack[stack_p] = instr_p + 1;
+        }
+
       case ']':
         if (memory[head] == (char) 0) {
           stack_p--;
