@@ -234,13 +234,14 @@ pWhileStmt = WhileStmt <$ pWord "while" <*> lexeme (pParens pExpr) <*> pStmt
 -- operator precedence table, operators at the top have highest priority and binding power with expressions
 operatorTable :: [[Operator Parser Expr]]
 operatorTable =
-  [ [ prefix "*" $ UnaryOp Deref,
-      prefix "&" $ UnaryOp Ref,
-      prefix "!" $ UnaryOp Not,
-      prefix "-" $ UnaryOp Neg,
-      prefix "+" id,
-      postfix "++" $ UnaryOp Inc,
+  [ [ postfix "++" $ UnaryOp Inc,
       postfix "--" $ UnaryOp Dec
+    ],
+    [ prefix "+" id,
+      prefix "-" $ UnaryOp Neg,
+      prefix "!" $ UnaryOp Not,
+      prefix "*" $ UnaryOp Deref,
+      prefix "&" $ UnaryOp Ref
     ],
     [ binary "*" $ BinaryOp Mul,
       binary "/" $ BinaryOp Div,
@@ -249,18 +250,18 @@ operatorTable =
     [ binary "+" $ BinaryOp Add,
       binary "-" $ BinaryOp Sub
     ],
-    [ binary "==" $ BinaryOp EqTo,
-      binary "!=" $ BinaryOp NtEqTo,
-      binary ">=" $ BinaryOp GtOrEqTo,
-      binary ">" $ BinaryOp Gt,
+    [ 
       binary "<=" $ BinaryOp LtOrEqTo,
-      binary "<" $ BinaryOp Lt
+      binary "<" $ BinaryOp Lt,
+      binary ">=" $ BinaryOp GtOrEqTo,
+      binary ">" $ BinaryOp Gt
     ],
-    [ binary "&&" $ BinaryOp And,
-      binary "||" $ BinaryOp Or
+    [ binary "==" $ BinaryOp EqTo,
+      binary "!=" $ BinaryOp NtEqTo
     ],
-    [ binary "=" $ BinaryOp Assign
-    ]
+    [binary "&&" $ BinaryOp And],
+    [binary "||" $ BinaryOp Or],
+    [binary "=" $ BinaryOp Assign]
   ]
 
 -- parse infix expressions
